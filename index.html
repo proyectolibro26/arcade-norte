@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arcade Norte — Máquinas arcade fabricadas en Rosario</title>
+<meta name="description" content="Arcades de pie con más de 10.000 juegos. Fabricación propia en Zona Norte, Rosario. Envíos a todo el país.">
+<meta property="og:title" content="Arcade Norte — Arcades hechos en Rosario">
+<meta property="og:image" content="img/mk4p-frente.webp">
+<meta property="og:description" content="Más de 10.000 juegos clásicos. Diseño personalizado. Envíos a todo el país.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect x='0' y='1' width='8' height='5' fill='%23ff2bd6'/%3E%3Crect x='1' y='2' width='6' height='3' fill='%2306040d'/%3E%3Crect x='2' y='3' width='1' height='1' fill='%2322e4ff'/%3E%3Crect x='5' y='3' width='1' height='1' fill='%2322e4ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{--c1:#ff2bd6;--c2:#22e4ff;--y:#ffe14d;--bg:#06040d;--bg2:#0d0719;--card:#0f0920;--ink:#f2eefc;--mut:#bdb5d8;--mut2:#cfc8e6}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Space Mono',monospace;overflow-x:hidden}
+a{color:var(--c2)}a:hover{color:#fff}
+.px{font-family:'Press Start 2P',monospace}
+.an{font-family:Anton,sans-serif;font-weight:400;text-transform:uppercase}
+.wrap{max-width:1280px;margin:0 auto;padding-left:24px;padding-right:24px}
+.scan{position:fixed;inset:0;z-index:50;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0,rgba(255,255,255,.035) 1px,transparent 1px,transparent 3px)}
+@keyframes gridmove{from{background-position:0 0}to{background-position:0 64px}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.6}94%{opacity:1}97%{opacity:.85}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes pix{0%,100%{fill:#ff2bd6}33%{fill:#22e4ff}66%{fill:#ffe14d}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.6)}70%{box-shadow:0 0 0 18px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+.grid-floor{animation:gridmove 1.2s linear infinite}
+.blink{animation:blink 1s steps(1) infinite}
+.flicker{animation:flicker 4s infinite}
+.marquee{animation:marquee 28s linear infinite}
+.floaty{animation:floaty 5s ease-in-out infinite}
+.pix{animation:pix 2.4s steps(1) infinite}
+@media (prefers-reduced-motion:reduce){.grid-floor,.blink,.flicker,.marquee,.floaty,.pix,.wa-float{animation:none!important}}
+button:focus-visible,a:focus-visible{outline:2px solid var(--y);outline-offset:3px}
+
+/* nav */
+header{position:sticky;top:0;z-index:40;background:rgba(6,4,13,.86);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08)}
+nav{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.logo span{font-size:14px;letter-spacing:1px}
+.navlinks{display:flex;gap:28px;font-size:14px}
+.navlinks a{color:var(--mut2);text-decoration:none}
+.navlinks a.hl{color:var(--y)}
+.navright{display:flex;align-items:center;gap:10px}
+.icon-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.2);color:var(--ink);text-decoration:none}
+.icon-btn:hover{border-color:var(--c1);color:var(--c1)}
+.btn{display:inline-block;font-family:'Press Start 2P',monospace;font-size:12px;padding:18px 24px;text-decoration:none;border:2px solid transparent;cursor:pointer;line-height:1.3}
+.btn-c1{background:var(--c1);color:var(--bg);box-shadow:0 0 28px rgba(255,43,214,.55)}
+.btn-c1:hover{color:var(--bg);filter:brightness(1.1)}
+.btn-ghost{border-color:var(--ink);color:var(--ink)}
+.btn-c2o{border-color:var(--c2);color:var(--c2);font-size:11px;padding:14px 18px;box-shadow:0 0 18px rgba(34,228,255,.35)}
+@media (max-width:900px){.navlinks{display:none}}
+
+/* hero */
+.hero{position:relative;min-height:760px;display:flex;align-items:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#2a0b45 0%,var(--bg) 70%)}
+.wm{position:absolute;left:0;right:0;top:40px;text-align:center;font-family:Anton,sans-serif;font-size:260px;line-height:1;color:rgba(255,255,255,.04);letter-spacing:8px;white-space:nowrap}
+.sun{position:absolute;left:50%;top:300px;width:360px;height:360px;margin-left:-180px;border-radius:50%;background:linear-gradient(180deg,#ffe14d 0,#ff7a3d 40%,#ff2bd6 100%);-webkit-mask:repeating-linear-gradient(180deg,#000 0,#000 18px,transparent 18px,transparent 26px);mask:repeating-linear-gradient(180deg,#000 0,#000 18px,transparent 18px,transparent 26px);opacity:.85}
+.floor{position:absolute;left:-50%;right:-50%;bottom:-120px;height:420px;perspective:320px}
+.floor div{width:100%;height:100%;transform:rotateX(62deg);transform-origin:50% 0;background-image:linear-gradient(var(--c1) 2px,transparent 2px),linear-gradient(90deg,var(--c1) 2px,transparent 2px);background-size:64px 64px;opacity:.55}
+.hero-in{position:relative;z-index:2;padding-top:80px;padding-bottom:200px;width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:48px}
+.hero-txt{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:24px}
+.hero h1{margin:0;font-size:84px;line-height:.98;letter-spacing:1px}
+.hero h1 em{font-style:normal;color:var(--c1);text-shadow:0 0 24px rgba(255,43,214,.6)}
+.lead{margin:0;font-size:18px;line-height:1.6;color:var(--mut2);max-width:620px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;font-size:13px}
+.chips span{padding:8px 12px;border:1px solid rgba(255,255,255,.18);background:rgba(6,4,13,.6)}
+@media (max-width:760px){.hero h1{font-size:44px}.wm{font-size:110px}.hero-in{padding-bottom:140px}}
+
+.ticker{border-top:2px solid var(--c1);border-bottom:2px solid var(--c1);background:var(--bg2);overflow:hidden;white-space:nowrap;padding:14px 0}
+.ticker div{display:inline-block;font-size:13px;color:var(--y)}
+
+section{scroll-margin-top:80px}
+.kicker{font-size:12px;color:var(--c2);margin-bottom:14px}
+h2.an{margin:0;font-size:60px;line-height:1}
+@media (max-width:760px){h2.an{font-size:40px}}
+
+/* catalog */
+.cat-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.chipbtn{font-family:'Press Start 2P',monospace;font-size:10px;padding:14px;min-height:44px;cursor:pointer;border:2px solid rgba(255,255,255,.25);background:transparent;color:var(--ink)}
+.chipbtn[aria-pressed="true"]{background:var(--c1);border-color:var(--c1);color:var(--bg)}
+.chipbtn.c2[aria-pressed="true"]{background:var(--c2);border-color:var(--c2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.card{background:var(--card);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-4px);border-color:var(--c1)}
+.card-img{height:360px;padding:20px 10px 10px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 70%,#2a0b45,var(--card) 70%);position:relative}
+.badge{position:absolute;top:12px;left:12px;font-size:9px;padding:6px 8px;background:var(--y);color:var(--bg)}
+.badge2{position:absolute;top:12px;right:12px;font-size:11px;padding:5px 8px;border:1px solid #7cff4d;color:#7cff4d}
+.card-b{padding:20px;display:flex;flex-direction:column;gap:12px;flex-grow:1}
+.card h3{margin:0;font-size:26px;letter-spacing:.5px}
+.card p{margin:0;font-size:14px;line-height:1.55;color:var(--mut)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12px;padding:4px 8px;border:1px solid rgba(34,228,255,.45);color:#9ff3ff}
+.card-f{margin-top:auto;padding-top:14px;border-top:1px dashed rgba(255,255,255,.15);display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.price{font-size:15px;color:var(--y)}
+.cuota{font-size:12px;color:var(--mut);margin-top:6px}
+.buy{font-size:10px;padding:12px;background:var(--c1);color:var(--bg);text-decoration:none;white-space:nowrap}
+.buy:hover{color:var(--bg);filter:brightness(1.1)}
+
+.band{background:var(--bg2);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.two{display:flex;flex-wrap:wrap;gap:56px}
+.two>*{flex:1 1 420px;min-width:0}
+.themes{display:flex;flex-wrap:wrap;gap:10px}
+.themes span{padding:10px 14px;background:#1a0f30;border:1px solid var(--c1)}
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+ol.steps li{display:flex;gap:20px;padding:24px;background:var(--bg);border:1px solid rgba(255,255,255,.1)}
+ol.steps .n{font-size:20px;color:var(--y)}
+ol.steps b{display:block;font-size:17px;margin-bottom:6px}
+ol.steps small{font-size:14px;line-height:1.6;color:var(--mut)}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.feat div{padding:28px;background:var(--card);display:flex;flex-direction:column;gap:12px}
+.feat h3{margin:0;font-size:18px}
+.feat p{margin:0;font-size:14px;line-height:1.6;color:var(--mut)}
+
+.card-img img{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 18px 24px rgba(0,0,0,.6));transition:transform .3s}
+.card:hover .card-img img{transform:scale(1.04)}
+.thumbs{display:flex;gap:8px}
+.thumbs button{width:56px;height:56px;padding:4px;background:#06040d;border:2px solid rgba(255,255,255,.15);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.thumbs button[aria-pressed="true"]{border-color:var(--c1)}
+.thumbs img{max-width:100%;max-height:100%;object-fit:contain}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.gal figure{margin:0;background:radial-gradient(circle at 50% 75%,#2a0b45,#0f0920 70%);border:1px solid rgba(255,255,255,.1);padding:18px 12px 0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.gal img{height:300px;width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(0 16px 20px rgba(0,0,0,.6))}
+.gal figcaption{width:100%;padding:12px;border-top:1px dashed rgba(255,255,255,.15);font-size:13px;display:flex;justify-content:space-between;gap:8px}
+
+/* propuesta */
+.prop{background:var(--y);color:var(--bg)}
+.prop h2{margin:0;font-size:76px;line-height:.98;max-width:1000px}
+@media (max-width:760px){.prop h2{font-size:44px}}
+h3.sub{margin:0 0 10px;font-size:40px}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.step{padding:20px;display:flex;flex-direction:column;gap:10px;min-height:190px;background:#120b26;border:2px solid var(--c2);transition:all .2s}
+.step.off{background:#0a0716;border-color:rgba(255,255,255,.08);color:#6f6890}
+.step .top{display:flex;justify-content:space-between;align-items:center}
+.step .who{font-size:11px;padding:4px 8px;border:1px solid currentColor;text-transform:uppercase;letter-spacing:1px}
+.svc{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.svc div{padding:24px;background:var(--bg);border:1px solid rgba(255,255,255,.1);display:flex;gap:16px}
+.board{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:14px;min-width:920px}
+.col{background:var(--card);border:1px solid rgba(255,255,255,.1);padding:14px;display:flex;flex-direction:column;gap:10px;min-height:260px}
+.col-h{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid}
+.order{text-align:left;font-family:'Space Mono',monospace;color:var(--ink);background:var(--bg);border:1px solid rgba(255,255,255,.14);padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:4px;min-height:44px}
+.order:hover{border-color:var(--c2)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+th{text-align:left;padding:12px;border-bottom:2px solid var(--c1)}
+td{padding:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.tl{padding:20px;background:var(--bg);border-left:4px solid}
+.faq{border:1px solid rgba(255,255,255,.14);background:var(--card)}
+.faq button{width:100%;text-align:left;background:none;border:0;color:var(--ink);font-family:'Space Mono',monospace;font-size:16px;font-weight:700;padding:18px 20px;display:flex;justify-content:space-between;gap:16px;cursor:pointer;min-height:44px}
+.faq .a{padding:0 20px 20px;font-size:14px;line-height:1.7;color:var(--mut2)}
+
+footer{position:relative;border-top:2px solid var(--c1);background:var(--bg2);overflow:hidden}
+.social{display:flex;flex-wrap:wrap;gap:12px}
+.soc{display:inline-flex;align-items:center;gap:10px;padding:14px 18px;min-height:48px;text-decoration:none;font-family:'Press Start 2P',monospace;font-size:11px;color:#fff;border:2px solid}
+.soc.wa{background:#25d366;border-color:#25d366;color:#06040d}
+.soc.ig{border-color:#ff2bd6;background:linear-gradient(135deg,#7a2bff,#ff2bd6 55%,#ffb347)}
+.soc.fb{background:#1877f2;border-color:#1877f2}
+.soc:hover{filter:brightness(1.1);color:#fff}
+.soc.wa:hover{color:#06040d}
+
+/* floating whatsapp */
+.wa-float{position:fixed;right:22px;bottom:22px;z-index:60;display:flex;align-items:center;gap:12px;background:#25d366;color:#06040d;text-decoration:none;padding:12px 18px 12px 12px;border-radius:999px;font-weight:700;font-size:14px;animation:pulse 2s infinite;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.wa-float:hover{color:#06040d;filter:brightness(1.05)}
+.wa-float .ic{width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+.wa-float small{display:block;font-size:11px;font-weight:400}
+@media (max-width:600px){.wa-float .txt{display:none}.wa-float{padding:10px;right:16px;bottom:16px}}
+.demo-flag{font-size:12px;color:#a59cc4}
+</style>
+</head>
+<body>
+<div class="scan" aria-hidden="true"></div>
+
+<header>
+<nav class="wrap">
+<a class="logo" href="#inicio" aria-label="Arcade Norte, inicio">
+<svg width="34" height="34" viewBox="0 0 8 8" aria-hidden="true" shape-rendering="crispEdges"><rect x="1" y="0" width="6" height="1" fill="#ff2bd6"/><rect x="0" y="1" width="8" height="5" fill="#ff2bd6"/><rect x="1" y="2" width="6" height="3" fill="#06040d"/><rect x="2" y="3" width="1" height="1" fill="#22e4ff"/><rect x="5" y="3" width="1" height="1" fill="#22e4ff"/><rect x="1" y="6" width="2" height="2" fill="#ff2bd6"/><rect x="5" y="6" width="2" height="2" fill="#ff2bd6"/></svg>
+<span class="px">ARCADE<span style="color:var(--c1)">NORTE</span></span>
+</a>
+<div class="navlinks">
+<a href="#maquinas">Máquinas</a>
+<a href="#personaliza">Personalizá</a>
+<a href="#comprar">Cómo comprar</a>
+<a href="#gestion" class="hl">★ La propuesta</a>
+</div>
+<div class="navright">
+<a class="icon-btn" href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram de Arcade Norte"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+<a class="icon-btn" href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="Facebook de Arcade Norte"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8h3V4h-3c-2.8 0-4 1.8-4 4.3V10H7v4h3v8h4v-8h3l1-4h-4V8.6c0-.4.3-.6.6-.6z"/></svg></a>
+<a class="btn btn-c2o" href="#contacto">CONSULTAR</a>
+</div>
+</nav>
+</header>
+
+<main>
+<section id="inicio" class="hero">
+<div class="hero-bg"></div>
+<div class="wm" aria-hidden="true">INSERT COIN</div>
+<div class="sun" aria-hidden="true"></div>
+<div class="floor" aria-hidden="true"><div class="grid-floor"></div></div>
+<div class="wrap hero-in">
+<div class="hero-txt">
+<div class="px" style="font-size:13px;color:var(--y)"><span class="blink">▶</span> PLAYER 1 · INSERT COIN</div>
+<h1 class="an flicker">Arcades hechos en Rosario.<br><em>Listos para jugar</em> en tu casa.</h1>
+<p class="lead">Arcades de pie de 24", 32" y 43" con <strong style="color:var(--ink)">más de 10.000 juegos clásicos</strong>. Fabricación propia en Zona Norte, diseño personalizado y envío gratis a todo el país.</p>
+<div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:8px">
+<a class="btn btn-c1" href="#maquinas">VER MÁQUINAS</a>
+<a class="btn btn-ghost" href="#personaliza">DISEÑÁ LA TUYA</a>
+</div>
+<div class="chips" style="margin-top:12px">
+<span>● +10.000 juegos</span><span>● Fabricación propia</span><span>● Envío gratis</span><span>● 3 cuotas sin interés</span><span>● Zona Norte, Rosario</span>
+</div>
+</div>
+<div class="floaty" style="flex:1 1 320px;display:flex;justify-content:center">
+<img src="img/mk4p-frente.webp" alt="Arcade de pie para 4 jugadores con diseño de Mortal Kombat" width="640" height="900" style="width:100%;max-width:400px;height:auto;filter:drop-shadow(0 0 30px rgba(255,43,214,.45)) drop-shadow(0 30px 40px rgba(0,0,0,.6))">
+</div>
+</div>
+</section>
+
+<div class="ticker" aria-hidden="true"><div class="px marquee">★ +10.000 JUEGOS CLÁSICOS ★ FABRICACIÓN PROPIA ★ DISEÑOS PERSONALIZADOS ★ ENVÍO GRATIS A TODO EL PAÍS ★ 3 CUOTAS SIN INTERÉS ★ HECHO EN ROSARIO ★ +10.000 JUEGOS CLÁSICOS ★ FABRICACIÓN PROPIA ★ DISEÑOS PERSONALIZADOS ★ ENVÍO GRATIS A TODO EL PAÍS ★ 3 CUOTAS SIN INTERÉS ★ HECHO EN ROSARIO&nbsp;</div></div>
+
+<section id="maquinas" class="wrap" style="padding-top:110px;padding-bottom:90px">
+<div class="cat-head">
+<div><div class="px kicker">STAGE 01 · CATÁLOGO</div><h2 class="an">Elegí tu máquina</h2></div>
+<p style="margin:0;max-width:420px;font-size:15px;line-height:1.6;color:var(--mut)">Cuatro tamaños, el mismo sistema con más de 10.000 juegos. Todas se fabrican a pedido con tu diseño.</p>
+</div>
+<div class="grid" id="catalog"></div>
+</section>
+
+<section id="personaliza" class="band">
+<div class="wrap two" style="padding-top:100px;padding-bottom:100px">
+<div style="display:flex;flex-direction:column;gap:20px">
+<div class="px kicker" style="margin:0">STAGE 02 · DISEÑO</div>
+<h2 class="an">Vos elegís el diseño.<br><span style="color:var(--c1)">Nosotros la fabricamos.</span></h2>
+<p style="margin:0;font-size:16px;line-height:1.7;color:var(--mut2)">Cada máquina sale con el vinilo y la gráfica que quieras: tu club, tu saga favorita, tu logo o tu nombre. Te mandamos una prueba de diseño antes de fabricar.</p>
+<div class="themes"><span>Videojuegos clásicos</span><span>Fútbol</span><span>Películas y series</span><span>Anime</span><span>Superhéroes</span><span>Tu logo o empresa</span></div>
+</div>
+<ol class="steps">
+<li><span class="px n">1</span><div><b>Elegís modelo y temática</b><small>Desde la web o por WhatsApp, con fotos de referencia si querés.</small></div></li>
+<li><span class="px n">2</span><div><b>Aprobás la prueba de diseño</b><small>Te mostramos cómo va a quedar antes de imprimir el vinilo.</small></div></li>
+<li><span class="px n">3</span><div><b>Fabricamos y te la enviamos</b><small>Plazo de fabricación: 30 días. Seguimiento del envío hasta tu puerta.</small></div></li>
+</ol>
+</div>
+<div class="wrap" style="padding-bottom:100px">
+<div class="px kicker">DISEÑOS YA FABRICADOS</div>
+<div class="gal">
+<figure><img src="img/sf-frente.webp" alt="Arcade de pie con diseño Street Fighter" loading="lazy"><figcaption><span>Street Fighter</span><span style="color:var(--c2)">2 jugadores</span></figcaption></figure>
+<figure><img src="img/pacman-frente.webp" alt="Arcade de pie con diseño Pac-Man" loading="lazy"><figcaption><span>Pac-Man</span><span style="color:var(--c2)">2 jugadores</span></figcaption></figure>
+<figure><img src="img/mk-lateral-fuego.webp" alt="Arcade de pie con diseño Mortal Kombat, vista lateral" loading="lazy"><figcaption><span>Mortal Kombat</span><span style="color:var(--c2)">2 jugadores</span></figcaption></figure>
+<figure><img src="img/simpsons-lateral-2.webp" alt="Arcade de pie con diseño Los Simpsons para 4 jugadores" loading="lazy"><figcaption><span>Los Simpsons</span><span style="color:var(--c2)">4 jugadores</span></figcaption></figure>
+<figure><img src="img/mk4p-lateral.webp" alt="Arcade de pie 4 jugadores Mortal Kombat fuego y hielo" loading="lazy"><figcaption><span>MK fuego y hielo</span><span style="color:var(--c2)">4 jugadores</span></figcaption></figure>
+</div>
+</div>
+</section>
+
+<section id="comprar" class="wrap" style="padding-top:100px;padding-bottom:100px">
+<div class="px kicker">STAGE 03 · COMPRA</div>
+<h2 class="an" style="margin-bottom:40px">Comprar es fácil</h2>
+<div class="feat">
+<div style="border:2px solid var(--c1)"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ff2bd6" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><h3>Pagás como quieras</h3><p>Tarjetas de crédito y débito en 3 cuotas sin interés, descuento por transferencia o efectivo, y Pago Fácil o Rapipago.</p></div>
+<div style="border:2px solid var(--c2)"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#22e4ff" stroke-width="2" aria-hidden="true"><path d="M1 7h13v10H1zM14 10h5l4 4v3h-9z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><h3>Envío gratis a todo el país</h3><p>En Rosario y alrededores coordinamos la entrega, o retirás en Zona Norte.</p></div>
+<div style="border:2px solid var(--y)"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffe14d" stroke-width="2" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M8 12l3 3 5-6"/></svg><h3>Garantía y soporte</h3><p>6 meses de garantía de fábrica y atención por WhatsApp después de la compra.</p></div>
+<div style="border:2px solid #7cff4d"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#7cff4d" stroke-width="2" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r="1"/><circle cx="18" cy="13" r="1"/></svg><h3>+10.000 juegos</h3><p>Clásicos de distintas generaciones para jugar solo, con amigos o en familia. Enchufás y jugás.</p></div>
+</div>
+</section>
+
+<!-- ============ LA PROPUESTA ============ -->
+<section id="gestion" class="prop">
+<div class="wrap" style="padding-top:90px;padding-bottom:70px;display:flex;flex-direction:column;gap:20px">
+<div class="px" style="font-size:12px">BONUS STAGE · LA PROPUESTA</div>
+<h2 class="an">Vos fabricás y despachás.<br>Nosotros nos ocupamos de vender.</h2>
+<p style="margin:0;font-size:18px;line-height:1.65;max-width:780px">Esta página es una demo de cómo se vería tu tienda. Detrás de ella armamos todo el circuito comercial: la web, las redes, las consultas, los cobros y la coordinación de envíos. Vos recibís pedidos confirmados y pagados, listos para fabricar.</p>
+</div>
+</section>
+
+<section style="border-top:2px solid var(--y)">
+<div class="wrap" style="padding-top:80px;padding-bottom:80px">
+<h3 class="an sub">El recorrido de una venta</h3>
+<p style="margin:0 0 28px;font-size:15px;color:var(--mut)">Tocá cada rol para ver quién hace qué.</p>
+<div class="filters" role="group" aria-label="Ver por rol" id="roles" style="margin-bottom:28px"></div>
+<div class="flow" id="flow"></div>
+<div id="roleSummary" style="margin-top:28px;padding:22px 24px;border:1px dashed var(--c2);font-size:15px;line-height:1.6"></div>
+</div>
+</section>
+
+<section class="band">
+<div class="wrap" style="padding-top:80px;padding-bottom:80px">
+<h3 class="an sub" style="margin-bottom:32px">Lo que incluye la gestión</h3>
+<div class="svc" id="services"></div>
+</div>
+</section>
+
+<section>
+<div class="wrap" style="padding-top:80px;padding-bottom:80px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:28px">
+<div><h3 class="an sub">Tu tablero de pedidos</h3><p style="margin:0;font-size:15px;color:var(--mut);max-width:640px">Así ves cada venta: qué fabricar, con qué diseño y cuándo está listo para despachar. Tocá un pedido para avanzarlo de columna.</p></div>
+<span class="px" style="font-size:10px;padding:8px 10px;border:1px solid var(--y);color:var(--y)">DATOS DE EJEMPLO</span>
+</div>
+<div style="overflow-x:auto"><div class="board" id="board"></div></div>
+</div>
+</section>
+
+<section class="band">
+<div class="wrap two" style="padding-top:80px;padding-bottom:80px;gap:40px">
+<div>
+<h3 class="an sub" style="margin-bottom:24px">Quién hace qué</h3>
+<div style="overflow-x:auto"><table>
+<thead><tr><th scope="col">Tarea</th><th scope="col" style="text-align:center">Nosotros</th><th scope="col" style="text-align:center">Vos</th></tr></thead>
+<tbody id="matrix"></tbody>
+</table></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<h3 class="an sub" style="margin-bottom:8px">Cómo arrancamos</h3>
+<div class="tl" style="border-color:var(--c1)"><div class="px" style="font-size:11px;color:var(--c1);margin-bottom:8px">SEMANA 1</div><div style="font-size:14px;line-height:1.6">Reunión en tu taller: modelos, precios, tiempos de fabricación y fotos de cada máquina.</div></div>
+<div class="tl" style="border-color:var(--c2)"><div class="px" style="font-size:11px;color:var(--c2);margin-bottom:8px">SEMANAS 2–3</div><div style="font-size:14px;line-height:1.6">Armamos la tienda real con dominio propio, cobros online, WhatsApp y redes.</div></div>
+<div class="tl" style="border-color:var(--y)"><div class="px" style="font-size:11px;color:var(--y);margin-bottom:8px">LANZAMIENTO</div><div style="font-size:14px;line-height:1.6">Salimos a vender. Vos recibís el primer pedido pagado en tu tablero.</div></div>
+<div style="padding:20px;border:1px dashed var(--y);font-size:14px;line-height:1.6"><strong style="color:var(--y)">Esquema comercial:</strong> [A CONVERSAR — comisión por venta, fee mensual o mixto].</div>
+</div>
+</div>
+</section>
+
+<section class="wrap" style="max-width:960px;padding-top:90px;padding-bottom:90px">
+<h2 class="an" style="font-size:48px;margin-bottom:28px">Preguntas frecuentes</h2>
+<div style="display:flex;flex-direction:column;gap:10px" id="faqs"></div>
+</section>
+</main>
+
+<footer id="contacto">
+<div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:-30px;text-align:center;font-family:Anton,sans-serif;font-size:200px;line-height:1;color:rgba(255,43,214,.07);white-space:nowrap">GAME ON</div>
+<div class="wrap" style="position:relative;padding-top:80px;padding-bottom:140px;display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between">
+<div style="flex:1 1 460px;display:flex;flex-direction:column;gap:18px">
+<div class="px" style="font-size:13px;color:var(--y)"><span class="blink">▶</span> CONTINUE?</div>
+<h2 class="an" style="font-size:56px">¿Armamos la tuya?</h2>
+<p style="margin:0;font-size:16px;line-height:1.6;color:var(--mut2)">Escribinos y te asesoramos con el modelo, el diseño y el envío.</p>
+<div class="social">
+<a class="soc wa" id="waFooter" href="#" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.8 2c0 1.2.9 2.3 1 2.5.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.4-.2z"/></svg>WHATSAPP</a>
+<a class="soc ig" href="https://www.instagram.com/" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>INSTAGRAM</a>
+<a class="soc fb" href="https://www.facebook.com/" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8h3V4h-3c-2.8 0-4 1.8-4 4.3V10H7v4h3v8h4v-8h3l1-4h-4V8.6c0-.4.3-.6.6-.6z"/></svg>FACEBOOK</a>
+</div>
+</div>
+<div style="flex:1 1 280px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.6;color:var(--mut2)">
+<div><strong style="color:var(--ink)">Taller:</strong> Zona Norte, Rosario, Santa Fe</div>
+<div><strong style="color:var(--ink)">WhatsApp:</strong> Arcade Norte · [NÚMERO]</div>
+<div><strong style="color:var(--ink)">Instagram:</strong> @arcadenorte</div>
+<div><strong style="color:var(--ink)">Facebook:</strong> /arcadenorte</div>
+<div><strong style="color:var(--ink)">Horario:</strong> [DÍAS Y HORARIOS]</div>
+<div class="demo-flag" style="margin-top:14px">Demo de presentación · "Arcade Norte" y los datos de contacto son de ejemplo. Precios de referencia de mercado.</div>
+</div>
+</div>
+</footer>
+
+<a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escribile a Arcade Norte por WhatsApp">
+<span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="#25d366" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.8 2c0 1.2.9 2.3 1 2.5.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.4-.2z"/></svg></span>
+<span class="txt">Arcade Norte<small>¡Escribinos por WhatsApp!</small></span>
+</a>
+
+<script>
+// Cambiar por el número real (formato internacional sin + ni espacios, ej: 5493415551234)
+const WA_NUMBER = '';
+const waLink = (msg) => 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
+document.getElementById('waFloat').href = waLink('¡Hola Arcade Norte! Quiero consultar por una máquina arcade.');
+document.getElementById('waFooter').href = waLink('¡Hola Arcade Norte! Quiero consultar por una máquina arcade.');
+
+const fmt = n => '$' + n.toLocaleString('es-AR');
+const GAMES = '+10.000 juegos';
+const models = [
+  { name:'Arcade de pie 24"', price:1440000, desc:'El mueble clásico de salón de juegos, en tamaño ideal para casa.', tags:[GAMES,'Pantalla 24"','2 jugadores'],
+    photos:[['sf-frente','Diseño Street Fighter'],['pacman-frente','Diseño Pac-Man']] },
+  { name:'Arcade de pie 32"', price:1625000, desc:'Pantalla grande y sonido potente para el quincho o la sala de juegos. 75 × 60 × 176 cm.', tags:[GAMES,'Pantalla 32"','2 jugadores'],
+    photos:[['mk-frente','Diseño Mortal Kombat, frente'],['mk-lateral-azul','Lateral Sub-Zero'],['mk-lateral-fuego','Lateral Scorpion']] },
+  { name:'Arcade de pie 32" 4P', price:1750000, desc:'Panel extendido para jugar de a cuatro al mismo tiempo.', tags:[GAMES,'Pantalla 32"','4 jugadores'],
+    photos:[['simpsons-frente','Diseño Los Simpsons, frente'],['simpsons-lateral','Lateral izquierdo'],['simpsons-lateral-2','Lateral derecho']] },
+  { name:'Arcade de pie 43"', price:2050000, desc:'El modelo más grande: pantalla de 43" y panel para hasta cuatro jugadores. Ideal para locales y bares.', tags:[GAMES,'Pantalla 43"','Hasta 4 jugadores'],
+    photos:[['mk4p-frente','Diseño Mortal Kombat fuego y hielo, frente'],['mk4p-lateral','Lateral hielo'],['mk4p-lateral-2','Lateral fuego']] }
+];
+const sel = models.map(() => 0);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+document.getElementById('catalog').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if(b){ sel[+b.dataset.m] = +b.dataset.p; renderCatalog(); } });
+function renderCatalog(){
+  document.getElementById('catalog').innerHTML = models.map((m, mi) => `
+  <article class="card">
+    <div class="card-img"><span class="px badge">DE PIE</span><span class="badge2">Envío gratis</span><img src="img/${m.photos[sel[mi]][0]}.webp" alt="${esc(m.name)} — ${esc(m.photos[sel[mi]][1])}" loading="lazy"></div>
+    <div class="card-b">
+      <div class="thumbs" role="group" aria-label="Fotos de ${esc(m.name)}">${m.photos.map((p,pi)=>`<button type="button" data-m="${mi}" data-p="${pi}" aria-pressed="${sel[mi]===pi}" aria-label="Ver ${esc(p[1])}"><img src="img/${p[0]}.webp" alt=""></button>`).join('')}</div>
+      <h3 class="an">${esc(m.name)}</h3>
+      <p>${esc(m.desc)}</p>
+      <div class="tags">${m.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
+      <div class="card-f">
+        <div><div class="px price">${fmt(m.price)}</div><div class="cuota">3 cuotas sin interés de ${fmt(Math.round(m.price/3))}</div></div>
+        <a class="px buy" target="_blank" rel="noopener" href="${waLink('¡Hola Arcade Norte! Me interesa: ' + m.name + ' (' + fmt(m.price) + ').')}">LA QUIERO</a>
+      </div>
+    </div>
+  </article>`).join('');
+}
+
+let role = 'todos';
+const roleDefs = [['todos','Todo el circuito'],['cliente','El cliente'],['nosotros','Nosotros'],['vos','Vos (fabricante)']];
+const stepDefs = [
+  { n:'01', who:'cliente', l:'Cliente', t:'Descubre la máquina', x:'Llega por Instagram, Google o una recomendación y entra a la tienda.' },
+  { n:'02', who:'nosotros', l:'Nosotros', t:'Atendemos la consulta', x:'Respondemos WhatsApp y redes, asesoramos y armamos la prueba de diseño.' },
+  { n:'03', who:'cliente', l:'Cliente', t:'Paga online', x:'Tarjeta en cuotas, transferencia o efectivo. El pago queda acreditado antes de fabricar.' },
+  { n:'04', who:'vos', l:'Vos', t:'Fabricás', x:'Te llega el pedido confirmado con modelo, diseño aprobado y 30 días de plazo.' },
+  { n:'05', who:'vos', l:'Vos', t:'Embalás y despachás', x:'Nosotros ya generamos la etiqueta y coordinamos el retiro con el transporte.' },
+  { n:'06', who:'nosotros', l:'Nosotros', t:'Seguimiento y postventa', x:'Avisamos al cliente, seguimos el envío y respondemos dudas después de la entrega.' }
+];
+const summaries = {
+  todos:'Seis pasos, tres roles. El cliente compra, nosotros vendemos y cobramos, vos fabricás y despachás.',
+  cliente:'Para el cliente es una compra simple: ve la máquina, consulta, paga online y la recibe en su casa.',
+  nosotros:'Nosotros: web, redes, atención de consultas, diseño de la prueba, cobros, etiquetas de envío y postventa.',
+  vos:'Vos: solo fabricar y embalar. Cada pedido llega pagado, con el diseño aprobado y el envío ya coordinado.'
+};
+function renderFlow(){
+  document.getElementById('roles').innerHTML = roleDefs.map(([id,l]) => `<button type="button" class="chipbtn c2" data-role="${id}" aria-pressed="${role===id}">${l}</button>`).join('');
+  document.getElementById('flow').innerHTML = stepDefs.map(s => {
+    const on = role==='todos' || role===s.who;
+    const col = s.who==='vos' ? '#ffe14d' : s.who==='cliente' ? '#f2eefc' : '#22e4ff';
+    return `<div class="step${on?'':' off'}" style="${on?'border-color:'+col:''}"><div class="top"><span class="px" style="font-size:14px;color:#ffe14d">${s.n}</span><span class="who">${s.l}</span></div><div style="font-weight:700;font-size:16px">${s.t}</div><div style="font-size:13px;line-height:1.6;opacity:.85">${s.x}</div></div>`;
+  }).join('');
+  document.getElementById('roleSummary').textContent = summaries[role];
+}
+document.getElementById('roles').addEventListener('click', e => { const b = e.target.closest('[data-role]'); if(b){ role = b.dataset.role; renderFlow(); } });
+
+const services = [
+  ['Tienda online propia','Esta web, con tu dominio, catálogo, fotos y fichas de cada modelo.'],
+  ['Cobros y cuotas','Pasarela de pago con tarjetas, cuotas y transferencia. El dinero entra antes de fabricar.'],
+  ['Atención al cliente','Respondemos WhatsApp, Instagram, Facebook y mails para que vos no pierdas tiempo de taller.'],
+  ['Pruebas de diseño','Armamos la gráfica personalizada y la hacemos aprobar por el cliente.'],
+  ['Redes y publicidad','Contenido semanal, campañas en Instagram y Facebook y posicionamiento en Google.'],
+  ['Logística de envíos','Cotización, etiquetas, retiro en tu taller y seguimiento hasta la entrega.'],
+  ['Tablero de pedidos','Ves cada venta con su estado: nueva, en fabricación, lista, enviada.'],
+  ['Reportes mensuales','Ventas, modelos más pedidos, consultas y de dónde vienen los clientes.']
+];
+document.getElementById('services').innerHTML = services.map(([t,d]) => `<div><span class="px" aria-hidden="true" style="font-size:14px;color:var(--c1)">▶</span><div><div style="font-weight:700;font-size:16px;margin-bottom:6px">${t}</div><div style="font-size:14px;line-height:1.6;color:var(--mut)">${d}</div></div></div>`).join('');
+
+let orders = [
+  { id:'#0142', city:'Rosario', model:'Arcade de pie 32"', design:'Fútbol', stage:0 },
+  { id:'#0141', city:'Córdoba', model:'Arcade de pie 32" 4P', design:'Clásicos', stage:0 },
+  { id:'#0139', city:'Funes', model:'Arcade de pie 24"', design:'Anime', stage:1 },
+  { id:'#0137', city:'CABA', model:'Arcade de pie 43"', design:'Logo empresa', stage:1 },
+  { id:'#0135', city:'Santa Fe', model:'Arcade de pie 24"', design:'Superhéroes', stage:2 },
+  { id:'#0131', city:'Granadero Baigorria', model:'Arcade de pie 43"', design:'Retro neón', stage:3 }
+];
+const cols = [['Nuevo · pagado','#ff2bd6','Tocar → pasa a fabricación'],['En fabricación (30 días)','#22e4ff','Tocar → listo para despachar'],['Listo para despachar','#ffe14d','Tocar → marcar enviado'],['Enviado','#7cff4d','Tocar → volver a nuevo (demo)']];
+function renderBoard(){
+  document.getElementById('board').innerHTML = cols.map(([t,c,next], i) => {
+    const items = orders.filter(o => o.stage===i);
+    return `<div class="col"><div class="col-h" style="border-color:${c}"><span style="font-weight:700;font-size:14px">${t}</span><span class="px" style="font-size:10px;color:${c}">${items.length}</span></div>${items.map(o => `<button type="button" class="order" data-id="${o.id}" aria-label="Pedido ${o.id}, ${esc(o.model)}. ${next}"><span style="font-size:11px;color:var(--mut)">${o.id} · ${o.city}</span><span style="font-weight:700;font-size:14px">${esc(o.model)}</span><span style="font-size:12px;color:#9ff3ff">Diseño: ${o.design}</span><span style="font-size:11px;color:#ffe14d">${next}</span></button>`).join('')}</div>`;
+  }).join('');
+}
+document.getElementById('board').addEventListener('click', e => { const b = e.target.closest('[data-id]'); if(b){ orders = orders.map(o => o.id===b.dataset.id ? {...o, stage:(o.stage+1)%4} : o); renderBoard(); } });
+
+const Y='●', N='—';
+const matrix = [['Tienda online y catálogo',Y,N],['Fotos y fichas de producto',Y,'Aporta máquinas'],['Redes (Instagram y Facebook)',Y,N],['Consultas de clientes',Y,N],['Cobros y cuotas',Y,N],['Prueba de diseño personalizada',Y,'Valida'],['Fabricación (30 días)',N,Y],['Embalaje y despacho','Coordina',Y],['Seguimiento y postventa',Y,'Soporte técnico']];
+document.getElementById('matrix').innerHTML = matrix.map(([t,u,v]) => `<tr><td>${t}</td><td style="text-align:center;color:var(--c2);font-weight:700">${u}</td><td style="text-align:center;color:var(--y);font-weight:700">${v}</td></tr>`).join('');
+
+let faqOpen = 0;
+const faqs = [
+  ['¿Qué juegos trae?','Más de 10.000 juegos clásicos de distintas generaciones, para disfrutar solo, con amigos o en familia. Viene lista para enchufar y jugar.'],
+  ['¿Cuánto tarda en estar lista mi máquina?','El plazo de fabricación es de 30 días desde que aprobás la prueba de diseño. Después se suma el tiempo del envío.'],
+  ['¿Hacen envíos a todo el país?','Sí, con envío gratis. En Rosario, Funes, Baigorria y alrededores coordinamos la entrega o podés retirar en Zona Norte.'],
+  ['¿Puedo pagar en cuotas?','Sí, en 3 cuotas sin interés con tarjeta de crédito. También hay descuento por transferencia o efectivo.'],
+  ['¿Tiene garantía?','Sí, 6 meses de garantía de fábrica y soporte por WhatsApp.']
+];
+function renderFaq(){
+  document.getElementById('faqs').innerHTML = faqs.map(([q,a],i) => `<div class="faq"><button type="button" data-i="${i}" aria-expanded="${faqOpen===i}"><span>${q}</span><span class="px" aria-hidden="true" style="color:var(--c1);font-size:14px">${faqOpen===i?'−':'+'}</span></button>${faqOpen===i?`<div class="a">${a}</div>`:''}</div>`).join('');
+}
+document.getElementById('faqs').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if(b){ const i = +b.dataset.i; faqOpen = faqOpen===i ? -1 : i; renderFaq(); } });
+
+renderCatalog(); renderFlow(); renderBoard(); renderFaq();
+</script>
+</body>
+</html>
